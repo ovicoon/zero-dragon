@@ -16,7 +16,7 @@ export default {
 
   <meta
     name="description"
-    content="Zero resistance to passion."
+    content="Zero drag to passion."
   />
 
   <style>
@@ -344,7 +344,7 @@ export default {
     <h1>ZERO DRAGON</h1>
 
     <p class="subtitle">
-      Zero resistance to passion.
+      Zero drag to passion.
     </p>
 
     <div class="buttons">
