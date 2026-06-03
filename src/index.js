@@ -137,7 +137,7 @@ const PAGE = `<!DOCTYPE html>
       width: 100%;
       height: 380px;
       border: 1px solid var(--border);
-      border-bottom: none; /* 하단 카드 세션과 이어지도록 경계 제거 */
+      border-bottom: none;
       overflow: hidden;
       background: #050505;
     }
@@ -177,7 +177,7 @@ const PAGE = `<!DOCTYPE html>
       background: #111;
     }
 
-    /* FIXED INFO CARD (아레나 아래 고정 영역) */
+    /* FIXED INFO CARD */
 
     .members-display {
       width: 100%;
@@ -199,6 +199,12 @@ const PAGE = `<!DOCTYPE html>
       letter-spacing: .15em;
     }
 
+    /* 한국어 모드일 때 플레이스홀더 가독성을 위한 한글 폰트 대응 */
+    html[lang="ko"] .chip-info-placeholder {
+      font-family: system-ui, sans-serif;
+      font-weight: 400;
+    }
+
     .chip-info-box {
       animation: fadeIn 0.3s ease forwards;
     }
@@ -209,11 +215,17 @@ const PAGE = `<!DOCTYPE html>
     }
 
     .chip-info-label {
+      font-family: system-ui, sans-serif;
+      font-size: 11px;
+      color: #666;
+      letter-spacing: .08em;
+      margin-bottom: 6px;
+    }
+    
+    html[lang="en"] .chip-info-label {
       font-family: 'Space Mono', monospace;
       font-size: 10px;
-      color: #666;
       letter-spacing: .14em;
-      margin-bottom: 6px;
     }
 
     .chip-info-name   { font-size: 22px; font-weight: 600; margin-bottom: 8px; font-family: 'Space Mono', monospace;}
@@ -244,6 +256,11 @@ const PAGE = `<!DOCTYPE html>
       color: #2a2a2a;
       letter-spacing: .1em;
       pointer-events: none;
+    }
+    
+    html[lang="ko"] .arena-hint {
+      font-family: system-ui, sans-serif;
+      font-weight: 400;
     }
 
     /* FOOTER */
@@ -298,16 +315,16 @@ const PAGE = `<!DOCTYPE html>
   <footer data-i18n="footer"></footer>
 
   <script>
-    /* ── TRANSLATIONS ── */
+    /* ── TRANSLATIONS (한국어 대폭 보강) ── */
     var T = {
       ko: {
         subtitle:       'Zero drag to passion.',
-        btn_members:    'MEMBERS',
-        members_title:  'Members',
-        members_desc:   'Zero Dragon을 이끄는 사람들.',
-        hint_desktop:   'HOVER CHIP TO SELECT',
-        hint_mobile:    'TAP CHIP TO SELECT',
-        placeholder:    '// SELECT A MEMBER TO VIEW DETAILS',
+        btn_members:    '멤버 소개',
+        members_title:  '멤버',
+        members_desc:   'ZERO DRAGON을 이끄는 사람들입니다.',
+        hint_desktop:   '이름 위에 마우스를 올리면 상세 정보가 표시됩니다',
+        hint_mobile:    '이름을 터치하면 상세 정보가 표시됩니다',
+        placeholder:    '// 멤버를 선택하면 이곳에 상세 정보가 나타납니다',
         footer:         'ZERO DRAGON — Since 2025'
       },
       en: {
@@ -322,25 +339,25 @@ const PAGE = `<!DOCTYPE html>
       }
     };
 
-    /* ── MEMBER DATA ── */
+    /* ── MEMBER DATA (역할명 직관화) ── */
     var MEMBERS = [
       {
         handle:    'ovicoon',
-        role:      { ko: 'Founder · Developer', en: 'Founder · Developer' },
-        desc:      { ko: 'Zero Dragon을 처음 세운 사람.', en: 'The one who founded Zero Dragon.' },
+        role:      { ko: '설립자 · 개발자', en: 'Founder · Developer' },
+        desc:      { ko: 'ZERO DRAGON을 처음 세운 사람.', en: 'The one who founded Zero Dragon.' },
         github:    'github.com/ovicoon',
         githubUrl: 'https://github.com/ovicoon'
       },
       {
         handle: '___junnn.12',
-        role:   { ko: 'Member', en: 'Member' },
-        desc:   { ko: 'Zero Dragon 크루 멤버.', en: 'Zero Dragon crew member.' }, 
+        role:   { ko: '크루 멤버', en: 'Crew Member' },
+        desc:   { ko: 'ZERO DRAGON 크루 멤버.', en: 'Zero Dragon crew member.' }, 
         github: null, githubUrl: null
       },
       {
         handle: 'kkolttugi',
-        role:   { ko: 'Member', en: 'Member' },
-        desc:   { ko: 'Zero Dragon 크루 멤버.', en: 'Zero Dragon crew member.' },
+        role:   { ko: '크루 멤버', en: 'Crew Member' },
+        desc:   { ko: 'ZERO DRAGON 크루 멤버.', en: 'Zero Dragon crew member.' },
         github: null, githubUrl: null
       }
     ];
@@ -380,9 +397,8 @@ const PAGE = `<!DOCTYPE html>
     document.getElementById('arena-hint').textContent = isMobile() ? t.hint_mobile : t.hint_desktop;
 
     var states = [];
-    var currentActiveId = null; // 현재 고정 표시 중인 멤버 체크용
+    var currentActiveId = null;
 
-    // 하단 카드 영역 갱신 함수
     function updateDisplayCard(memberData) {
       if (!memberData) {
         displayCard.innerHTML = '<div class="chip-info-placeholder">' + t.placeholder + '</div>';
@@ -433,7 +449,6 @@ const PAGE = `<!DOCTYPE html>
       el.style.left = state.x + 'px';
       el.style.top  = state.y + 'px';
 
-      // 데스크톱: 마우스 진입시 무조건 해당 멤버 고정 노출 및 애니메이션 일시정지
       el.addEventListener('mouseenter', function() {
         if (isMobile()) return;
         states.forEach(function(s) { s.el.classList.remove('is-hovered'); s.paused = false; });
@@ -444,20 +459,15 @@ const PAGE = `<!DOCTYPE html>
         updateDisplayCard(m);
       });
 
-      // 데스크톱: 마우스가 나가도 다른 칩을 호버하기 전까지는 데이터 유지 (마우스가 완전히 아레나를 벗어나면 리셋하고 싶다면 아래 마우스리브 이벤트 사용)
       el.addEventListener('mouseleave', function() {
         if (isMobile()) return;
-        // 호버 효과는 떼지만 데이터는 다른 곳을 가리키기 전까지 정지 상태 유지
         el.classList.remove('is-hovered');
       });
 
-      /* 모바일: 클릭(터치) 토글 방식 */
       el.addEventListener('click', function(e) {
         e.stopPropagation();
-        
         var isAlreadyActive = el.classList.contains('active');
         
-        // 일단 모든 상태 초기화
         states.forEach(function(s) { 
           s.el.classList.remove('active', 'is-hovered'); 
           s.paused = false; 
@@ -474,7 +484,6 @@ const PAGE = `<!DOCTYPE html>
       });
     });
 
-    /* 아레나 빈 배경 클릭 시 선택 해제 및 복귀 */
     arena.addEventListener('click', function() {
       states.forEach(function(s) { 
         s.el.classList.remove('active', 'is-hovered'); 
