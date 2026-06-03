@@ -50,13 +50,13 @@ const PAGE = `<!DOCTYPE html>
     /* HERO */
 
     .hero {
-      min-height: 80vh;
+      min-height: 70vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
-      padding: 80px 24px 40px 24px;
+      padding: 80px 24px 20px 24px;
     }
 
     .logo {
@@ -135,8 +135,9 @@ const PAGE = `<!DOCTYPE html>
       margin-top: 40px;
       position: relative;
       width: 100%;
-      height: 450px;
+      height: 380px;
       border: 1px solid var(--border);
+      border-bottom: none; /* 하단 카드 세션과 이어지도록 경계 제거 */
       overflow: hidden;
       background: #050505;
     }
@@ -172,64 +173,51 @@ const PAGE = `<!DOCTYPE html>
 
     .member-chip.is-hovered .chip-inner,
     .member-chip.active     .chip-inner {
-      border-color: #888;
+      border-color: #fff;
       background: #111;
     }
 
-    .chip-popup {
-      position: absolute;
-      top: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      padding-top: 8px;
-      min-width: 220px;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity .2s ease;
-      z-index: 20;
+    /* FIXED INFO CARD (아레나 아래 고정 영역) */
+
+    .members-display {
+      width: 100%;
+      min-height: 150px;
+      border: 1px solid var(--border);
+      background: #0a0a0a;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
     }
 
-    .member-chip.is-hovered .chip-popup,
-    .member-chip.active     .chip-popup {
-      opacity: 1;
-      pointer-events: auto;
+    .chip-info-placeholder {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: #333;
+      text-align: center;
+      letter-spacing: .15em;
     }
 
-    /* Direction variants */
-    .member-chip.popup-up .chip-popup {
-      top: auto;
-      bottom: 100%;
-      padding-top: 0;
-      padding-bottom: 8px;
+    .chip-info-box {
+      animation: fadeIn 0.3s ease forwards;
     }
 
-    .member-chip.popup-clamp-left .chip-popup {
-      left: 0;
-      transform: none;
-    }
-
-    .member-chip.popup-clamp-right .chip-popup {
-      left: auto;
-      right: 0;
-      transform: none;
-    }
-
-    .chip-popup-box {
-      background: #0f0f0f;
-      border: 1px solid #333;
-      padding: 20px;
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .chip-info-label {
       font-family: 'Space Mono', monospace;
       font-size: 10px;
-      color: #555;
+      color: #666;
       letter-spacing: .14em;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
-    .chip-info-name   { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
-    .chip-info-role   { color: var(--sub); font-size: 13px; line-height: 1.6; margin-bottom: 14px; }
+    .chip-info-name   { font-size: 22px; font-weight: 600; margin-bottom: 8px; font-family: 'Space Mono', monospace;}
+    .chip-info-role   { color: var(--sub); font-size: 14px; line-height: 1.6; margin-bottom: 16px; }
 
     .chip-info-link {
       display: inline-flex;
@@ -241,6 +229,7 @@ const PAGE = `<!DOCTYPE html>
       text-decoration: none;
       border: 1px solid #242424;
       padding: 6px 12px;
+      align-self: flex-start;
       transition: border-color .2s, color .2s;
     }
 
@@ -277,8 +266,8 @@ const PAGE = `<!DOCTYPE html>
       .buttons { width: 100%; flex-direction: column; }
       .btn     { width: 100%; text-align: center; }
       #members { padding: 60px 20px; }
-      .members-arena  { height: 380px; }
-      .chip-popup     { min-width: 180px; }
+      .members-arena   { height: 320px; }
+      .members-display { padding: 20px; min-height: 160px; }
     }
   </style>
 </head>
@@ -296,8 +285,13 @@ const PAGE = `<!DOCTYPE html>
   <section id="members">
     <h2 class="section-title" data-i18n="members_title"></h2>
     <p  class="section-desc"  data-i18n="members_desc"></p>
+    
     <div class="members-arena" id="arena">
       <span class="arena-hint" id="arena-hint"></span>
+    </div>
+    
+    <div class="members-display" id="display-card">
+      <div class="chip-info-placeholder" id="placeholder-text"></div>
     </div>
   </section>
 
@@ -311,8 +305,9 @@ const PAGE = `<!DOCTYPE html>
         btn_members:    'MEMBERS',
         members_title:  'Members',
         members_desc:   'Zero Dragon을 이끄는 사람들.',
-        hint_desktop:   'HOVER TO REVEAL',
-        hint_mobile:    'TAP TO REVEAL',
+        hint_desktop:   'HOVER CHIP TO SELECT',
+        hint_mobile:    'TAP CHIP TO SELECT',
+        placeholder:    '// SELECT A MEMBER TO VIEW DETAILS',
         footer:         'ZERO DRAGON — Since 2025'
       },
       en: {
@@ -320,13 +315,14 @@ const PAGE = `<!DOCTYPE html>
         btn_members:    'MEMBERS',
         members_title:  'Members',
         members_desc:   'The people behind Zero Dragon.',
-        hint_desktop:   'HOVER TO REVEAL',
-        hint_mobile:    'TAP TO REVEAL',
+        hint_desktop:   'HOVER CHIP TO SELECT',
+        hint_mobile:    'TAP CHIP TO SELECT',
+        placeholder:    '// SELECT A MEMBER TO VIEW DETAILS',
         footer:         'ZERO DRAGON — Since 2025'
       }
     };
 
-    /* ── MEMBER DATA (부서 정보 dept 제거) ── */
+    /* ── MEMBER DATA ── */
     var MEMBERS = [
       {
         handle:    'ovicoon',
@@ -338,12 +334,14 @@ const PAGE = `<!DOCTYPE html>
       {
         handle: '___junnn.12',
         role:   { ko: 'Member', en: 'Member' },
-        desc:   null, github: null, githubUrl: null
+        desc:   { ko: 'Zero Dragon 크루 멤버.', en: 'Zero Dragon crew member.' }, 
+        github: null, githubUrl: null
       },
       {
         handle: 'kkolttugi',
         role:   { ko: 'Member', en: 'Member' },
-        desc:   null, github: null, githubUrl: null
+        desc:   { ko: 'Zero Dragon 크루 멤버.', en: 'Zero Dragon crew member.' },
+        github: null, githubUrl: null
       }
     ];
 
@@ -357,8 +355,8 @@ const PAGE = `<!DOCTYPE html>
       if (v !== undefined) el.textContent = v;
     });
 
-    /* ── MEMBERS ARENA ── */
-    var GH_ICON = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0">'
+    /* ── MEMBERS ARENA & DISPLAY CARD ── */
+    var GH_ICON = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0; margin-right:6px;">'
       + '<path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489'
       + '.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703'
       + '-2.782.604-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462'
@@ -373,56 +371,43 @@ const PAGE = `<!DOCTYPE html>
       + ' 0 .267.18.579.688.481C19.138 20.163 22 16.418 22 12'
       + ' c0-5.523-4.477-10-10-10z"/></svg>';
 
-    var arena    = document.getElementById('arena');
-    var isMobile = function() { return window.matchMedia('(hover: none)').matches; };
+    var arena        = document.getElementById('arena');
+    var displayCard  = document.getElementById('display-card');
+    var placeholder  = document.getElementById('placeholder-text');
+    var isMobile     = function() { return window.matchMedia('(hover: none)').matches; };
 
-    document.getElementById('arena-hint').textContent =
-      isMobile() ? t.hint_mobile : t.hint_desktop;
-
-    /* Compute popup direction based on chip position in arena */
-    function setPopupDir(state) {
-      var el    = state.el;
-      var aH    = arena.offsetHeight;
-      var aW    = arena.offsetWidth;
-      var cw    = el.offsetWidth  || 140;
-      var ch    = el.offsetHeight || 44;
-      var POP_H = 140; /* Reduced because dept info is removed */
-      var POP_W = 230;
-
-      /* vertical: open above if not enough room below */
-      if (state.y + ch + POP_H + 10 > aH) {
-        el.classList.add('popup-up');
-      } else {
-        el.classList.remove('popup-up');
-      }
-
-      /* horizontal: clamp if popup would overflow arena edge */
-      el.classList.remove('popup-clamp-left', 'popup-clamp-right');
-      var cx = state.x + cw / 2;
-      if (cx - POP_W / 2 < 8)           el.classList.add('popup-clamp-left');
-      else if (cx + POP_W / 2 > aW - 8) el.classList.add('popup-clamp-right');
-    }
+    placeholder.textContent = t.placeholder;
+    document.getElementById('arena-hint').textContent = isMobile() ? t.hint_mobile : t.hint_desktop;
 
     var states = [];
+    var currentActiveId = null; // 현재 고정 표시 중인 멤버 체크용
 
-    MEMBERS.forEach(function(m) {
+    // 하단 카드 영역 갱신 함수
+    function updateDisplayCard(memberData) {
+      if (!memberData) {
+        displayCard.innerHTML = '<div class="chip-info-placeholder">' + t.placeholder + '</div>';
+        currentActiveId = null;
+        return;
+      }
+      
+      var desc = memberData.desc ? memberData.desc[lang] : '';
+      var githubLink = memberData.github 
+        ? '<a class="chip-info-link" href="' + memberData.githubUrl + '" target="_blank" rel="noopener">' + GH_ICON + memberData.github + '</a>' 
+        : '';
+
+      displayCard.innerHTML = 
+        '<div class="chip-info-box">' +
+          '<div class="chip-info-label">' + memberData.role[lang] + '</div>' +
+          '<div class="chip-info-name">' + memberData.handle + '</div>' +
+          (desc ? '<div class="chip-info-role">' + desc + '</div>' : '') +
+          githubLink +
+        '</div>';
+    }
+
+    MEMBERS.forEach(function(m, idx) {
       var el = document.createElement('div');
       el.className = 'member-chip';
-
-      var desc = m.desc ? m.desc[lang] : null;
-
-      var info = '<div class="chip-info-label">' + m.role[lang] + '</div>'
-               + '<div class="chip-info-name">'  + m.handle + '</div>';
-      if (desc) info += '<div class="chip-info-role">' + desc + '</div>';
-      if (m.github) {
-        info += '<a class="chip-info-link" href="' + m.githubUrl
-              + '" target="_blank" rel="noopener">' + GH_ICON + m.github + '</a>';
-      }
-
-      el.innerHTML =
-          '<div class="chip-inner">' + m.handle + '</div>'
-        + '<div class="chip-popup"><div class="chip-popup-box">' + info + '</div></div>';
-
+      el.innerHTML = '<div class="chip-inner">' + m.handle + '</div>';
       arena.appendChild(el);
 
       var aW    = arena.offsetWidth;
@@ -432,6 +417,8 @@ const PAGE = `<!DOCTYPE html>
       var spd   = 0.45 + Math.random() * 0.4;
 
       var state = {
+        id:              idx,
+        data:            m,
         el:              el,
         x:               mg + Math.random() * (aW - 160 - mg * 2),
         y:               mg + Math.random() * (aH -  44 - mg * 2),
@@ -439,55 +426,61 @@ const PAGE = `<!DOCTYPE html>
         vy:              Math.sin(angle) * spd,
         paused:          false,
         perturbTimer:    0,
-        perturbInterval: 80 + Math.random() * 120,
-        leaveTimer:      null
+        perturbInterval: 80 + Math.random() * 120
       };
 
       states.push(state);
       el.style.left = state.x + 'px';
       el.style.top  = state.y + 'px';
 
-      var popup = el.querySelector('.chip-popup');
-
-      function showPopup() {
-        clearTimeout(state.leaveTimer);
+      // 데스크톱: 마우스 진입시 무조건 해당 멤버 고정 노출 및 애니메이션 일시정지
+      el.addEventListener('mouseenter', function() {
+        if (isMobile()) return;
+        states.forEach(function(s) { s.el.classList.remove('is-hovered'); s.paused = false; });
+        
         state.paused = true;
         el.classList.add('is-hovered');
-        setPopupDir(state);
-      }
+        currentActiveId = state.id;
+        updateDisplayCard(m);
+      });
 
-      function scheduleHide() {
-        state.leaveTimer = setTimeout(function() {
-          if (!el.classList.contains('active')) {
-            state.paused = false;
-            el.classList.remove('is-hovered');
-          }
-        }, 220);
-      }
+      // 데스크톱: 마우스가 나가도 다른 칩을 호버하기 전까지는 데이터 유지 (마우스가 완전히 아레나를 벗어나면 리셋하고 싶다면 아래 마우스리브 이벤트 사용)
+      el.addEventListener('mouseleave', function() {
+        if (isMobile()) return;
+        // 호버 효과는 떼지만 데이터는 다른 곳을 가리키기 전까지 정지 상태 유지
+        el.classList.remove('is-hovered');
+      });
 
-      el.addEventListener('mouseenter',    showPopup);
-      el.addEventListener('mouseleave',    scheduleHide);
-      popup.addEventListener('mouseenter', function() { clearTimeout(state.leaveTimer); });
-      popup.addEventListener('mouseleave', scheduleHide);
-
-      /* mobile: tap to toggle */
+      /* 모바일: 클릭(터치) 토글 방식 */
       el.addEventListener('click', function(e) {
-        if (!isMobile()) return;
         e.stopPropagation();
-        var on = el.classList.toggle('active');
-        state.paused = on;
-        if (on) setPopupDir(state);
-        /* close others */
-        states.forEach(function(s) {
-          if (s.el !== el) { s.el.classList.remove('active'); s.paused = false; }
+        
+        var isAlreadyActive = el.classList.contains('active');
+        
+        // 일단 모든 상태 초기화
+        states.forEach(function(s) { 
+          s.el.classList.remove('active', 'is-hovered'); 
+          s.paused = false; 
         });
+
+        if (!isAlreadyActive) {
+          state.paused = true;
+          el.classList.add('active');
+          currentActiveId = state.id;
+          updateDisplayCard(m);
+        } else {
+          updateDisplayCard(null);
+        }
       });
     });
 
-    /* tap arena background to close all (mobile) */
+    /* 아레나 빈 배경 클릭 시 선택 해제 및 복귀 */
     arena.addEventListener('click', function() {
-      if (!isMobile()) return;
-      states.forEach(function(s) { s.el.classList.remove('active'); s.paused = false; });
+      states.forEach(function(s) { 
+        s.el.classList.remove('active', 'is-hovered'); 
+        s.paused = false; 
+      });
+      updateDisplayCard(null);
     });
 
     /* ── BROWNIAN ANIMATION LOOP ── */
@@ -523,7 +516,6 @@ const PAGE = `<!DOCTYPE html>
         s.x += s.vx * dt;
         s.y += s.vy * dt;
 
-        /* 실시간 윈도우 반응형 충돌 체크 반영 */
         if (s.x < 0)       { s.x = 0;       s.vx =  Math.abs(s.vx); }
         if (s.x + cw > aW) { s.x = aW - cw; s.vx = -Math.abs(s.vx); }
         if (s.y < 0)       { s.y = 0;       s.vy =  Math.abs(s.vy); }
