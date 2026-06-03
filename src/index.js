@@ -35,6 +35,7 @@ const PAGE = `<!DOCTYPE html>
       overflow-x: hidden;
     }
 
+    /* 배경 그리드 패턴 */
     body::before {
       content: "";
       position: fixed;
@@ -47,16 +48,15 @@ const PAGE = `<!DOCTYPE html>
       z-index: -1;
     }
 
-    /* HERO */
-
+    /* HERO 섹션: 화면을 꽉 채우고 여백을 넉넉히 확보 */
     .hero {
-      min-height: 70vh;
+      min-height: 100vh; /* 화면 높이 전체 차지 */
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
-      padding: 80px 24px 20px 24px;
+      padding: 80px 24px 120px 24px; /* 하단 여백 대폭 증가 */
     }
 
     .logo {
@@ -87,13 +87,6 @@ const PAGE = `<!DOCTYPE html>
       line-height: 1.6;
     }
 
-    .buttons {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 14px;
-    }
-
     .btn {
       border: 1px solid var(--border);
       color: #fff;
@@ -111,7 +104,10 @@ const PAGE = `<!DOCTYPE html>
       background: rgba(255,255,255,.03);
     }
 
-    /* SECTIONS */
+    /* MEMBERS 섹션: 상하 여백을 시원하게 벌림 */
+    #members { 
+      padding: 160px min(10vw, 120px) 160px min(10vw, 120px); 
+    }
 
     .section-title {
       font-family: 'Space Mono', monospace;
@@ -125,17 +121,14 @@ const PAGE = `<!DOCTYPE html>
       max-width: 700px;
       line-height: 1.8;
       font-size: clamp(14px, 2vw, 16px);
+      margin-bottom: 60px;
     }
 
-    /* MEMBERS */
-
-    #members { padding: 40px min(10vw, 120px) 120px min(10vw, 120px); }
-
+    /* 아레나 영역 */
     .members-arena {
-      margin-top: 40px;
       position: relative;
       width: 100%;
-      height: 380px;
+      height: 420px;
       border: 1px solid var(--border);
       border-bottom: none;
       overflow: hidden;
@@ -177,8 +170,7 @@ const PAGE = `<!DOCTYPE html>
       background: #111;
     }
 
-    /* FIXED INFO CARD */
-
+    /* 하단 고정 멤버 정보 카드 */
     .members-display {
       width: 100%;
       min-height: 150px;
@@ -194,7 +186,7 @@ const PAGE = `<!DOCTYPE html>
     .chip-info-placeholder {
       font-family: 'Space Mono', monospace;
       font-size: 11px;
-      color: #777; /* 더 밝게 수정 (#333 -> #777) */
+      color: #777; /* 어두운 안내 문구 가독성 상향 */
       text-align: center;
       letter-spacing: .15em;
     }
@@ -214,7 +206,6 @@ const PAGE = `<!DOCTYPE html>
     }
 
     .chip-info-label {
-      font-family: system-ui, sans-serif;
       font-size: 11px;
       color: #666;
       letter-spacing: .08em;
@@ -227,8 +218,14 @@ const PAGE = `<!DOCTYPE html>
       letter-spacing: .14em;
     }
 
-    .chip-info-name   { font-size: 22px; font-weight: 600; margin-bottom: 8px; font-family: 'Space Mono', monospace;}
-    .chip-info-role   { color: var(--sub); font-size: 14px; line-height: 1.6; margin-bottom: 16px; }
+    .chip-info-name { 
+      font-size: 22px; 
+      font-weight: 600; 
+      margin-bottom: 8px; 
+      font-family: 'Space Mono', monospace;
+    }
+
+    .chip-info-role { color: var(--sub); font-size: 14px; line-height: 1.6; margin-bottom: 16px; }
 
     .chip-info-link {
       display: inline-flex;
@@ -252,7 +249,7 @@ const PAGE = `<!DOCTYPE html>
       right: 20px;
       font-family: 'Space Mono', monospace;
       font-size: 10px;
-      color: #666; /* 더 밝게 수정 (#2a2a2a -> #666) */
+      color: #666; /* 힌트 가독성 상향 */
       letter-spacing: .1em;
       pointer-events: none;
     }
@@ -263,26 +260,21 @@ const PAGE = `<!DOCTYPE html>
     }
 
     /* FOOTER */
-
     footer {
       border-top: 1px solid var(--border);
-      padding: 40px 24px;
+      padding: 60px 24px;
       text-align: center;
-      color: #777; /* 더 밝게 수정 (#444 -> #777) */
+      color: #777; /* 푸터 가독성 상향 */
       font-family: 'Space Mono', monospace;
       font-size: 12px;
       letter-spacing: .08em;
     }
 
-    /* MOBILE */
-
+    /* 모바일 최적화: 여백 조정 */
     @media (max-width: 768px) {
-      .hero    { padding: 60px 20px 20px 20px; min-height: auto; }
-      .logo    { width: 160px; }
-      .buttons { width: 100%; flex-direction: column; }
-      .btn     { width: 100%; text-align: center; }
-      #members { padding: 60px 20px; }
-      .members-arena   { height: 320px; }
+      .hero { padding: 60px 20px 80px 20px; min-height: 80vh; }
+      #members { padding: 80px 20px 100px 20px; }
+      .members-arena { height: 340px; }
       .members-display { padding: 20px; min-height: 160px; }
     }
   </style>
@@ -294,13 +286,13 @@ const PAGE = `<!DOCTYPE html>
     <h1>ZERO DRAGON</h1>
     <p class="subtitle" data-i18n="subtitle"></p>
     <div class="buttons">
-      <a href="#members"  class="btn" data-i18n="btn_members"></a>
+      <a href="#members" class="btn" data-i18n="btn_members"></a>
     </div>
   </section>
 
   <section id="members">
     <h2 class="section-title" data-i18n="members_title"></h2>
-    <p  class="section-desc"  data-i18n="members_desc"></p>
+    <p class="section-desc" data-i18n="members_desc"></p>
     
     <div class="members-arena" id="arena">
       <span class="arena-hint" id="arena-hint"></span>
@@ -314,7 +306,7 @@ const PAGE = `<!DOCTYPE html>
   <footer data-i18n="footer"></footer>
 
   <script>
-    /* ── TRANSLATIONS (주석 기호 // 제거 및 다국어 팩 수정) ── */
+    /* ── TRANSLATIONS: 가독성 & 자연스러운 한글화 (// 제거) ── */
     var T = {
       ko: {
         subtitle:       'Zero drag to passion.',
@@ -338,7 +330,7 @@ const PAGE = `<!DOCTYPE html>
       }
     };
 
-    /* ── MEMBER DATA ── */
+    /* ── MEMBER DATA (역할 한글화) ── */
     var MEMBERS = [
       {
         handle:    'ovicoon',
@@ -355,37 +347,20 @@ const PAGE = `<!DOCTYPE html>
       },
       {
         handle: 'kkolttugi',
-        role:   { ko: 'Member', en: 'Member' },
+        role:   { ko: '크루 멤버', en: 'Crew Member' },
         desc:   { ko: 'ZERO DRAGON 크루 멤버.', en: 'Zero Dragon crew member.' },
         github: null, githubUrl: null
       }
     ];
 
-    /* ── DETECT LANGUAGE & APPLY ── */
     var lang = navigator.language.startsWith('ko') ? 'ko' : 'en';
-    var t    = T[lang];
+    var t = T[lang];
 
     document.documentElement.lang = lang;
     document.querySelectorAll('[data-i18n]').forEach(function(el) {
       var v = t[el.dataset.i18n];
       if (v !== undefined) el.textContent = v;
     });
-
-    /* ── MEMBERS ARENA & DISPLAY CARD ── */
-    var GH_ICON = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0; margin-right:6px;">'
-      + '<path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489'
-      + '.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703'
-      + '-2.782.604-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462'
-      + '-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03'
-      + '.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338'
-      + '-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683'
-      + '-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025'
-      + 'A9.578 9.578 0 0 1 12 6.836c.85.004 1.705.114 2.504.336'
-      + ' 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647'
-      + '.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935'
-      + '.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741'
-      + ' 0 .267.18.579.688.481C19.138 20.163 22 16.418 22 12'
-      + ' c0-5.523-4.477-10-10-10z"/></svg>';
 
     var arena        = document.getElementById('arena');
     var displayCard  = document.getElementById('display-card');
@@ -407,7 +382,7 @@ const PAGE = `<!DOCTYPE html>
       
       var desc = memberData.desc ? memberData.desc[lang] : '';
       var githubLink = memberData.github 
-        ? '<a class="chip-info-link" href="' + memberData.githubUrl + '" target="_blank" rel="noopener">' + GH_ICON + memberData.github + '</a>' 
+        ? '<a class="chip-info-link" href="' + memberData.githubUrl + '" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0; margin-right:6px;"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741 0 .267.18.579.688.481C19.138 20.163 22 16.418 22 12 c0-5.523-4.477-10-10-10z"/></svg>' + memberData.github + '</a>' 
         : '';
 
       displayCard.innerHTML = 
@@ -425,58 +400,34 @@ const PAGE = `<!DOCTYPE html>
       el.innerHTML = '<div class="chip-inner">' + m.handle + '</div>';
       arena.appendChild(el);
 
-      var aW    = arena.offsetWidth;
-      var aH    = arena.offsetHeight;
-      var mg    = 20;
-      var angle = Math.random() * Math.PI * 2;
-      var spd   = 0.45 + Math.random() * 0.4;
+      var aW = arena.offsetWidth, aH = arena.offsetHeight;
+      var mg = 20, angle = Math.random() * Math.PI * 2, spd = 0.45 + Math.random() * 0.4;
 
       var state = {
-        id:              idx,
-        data:            m,
-        el:              el,
-        x:               mg + Math.random() * (aW - 160 - mg * 2),
-        y:               mg + Math.random() * (aH -  44 - mg * 2),
-        vx:              Math.cos(angle) * spd,
-        vy:              Math.sin(angle) * spd,
-        paused:          false,
-        perturbTimer:    0,
-        perturbInterval: 80 + Math.random() * 120
+        id: idx, data: m, el: el,
+        x: mg + Math.random() * (aW - 160 - mg * 2),
+        y: mg + Math.random() * (aH - 44 - mg * 2),
+        vx: Math.cos(angle) * spd, vy: Math.sin(angle) * spd,
+        paused: false, perturbTimer: 0, perturbInterval: 80 + Math.random() * 120
       };
 
       states.push(state);
-      el.style.left = state.x + 'px';
-      el.style.top  = state.y + 'px';
+      el.style.left = state.x + 'px'; el.style.top = state.y + 'px';
 
       el.addEventListener('mouseenter', function() {
         if (isMobile()) return;
         states.forEach(function(s) { s.el.classList.remove('is-hovered'); s.paused = false; });
-        
         state.paused = true;
         el.classList.add('is-hovered');
-        currentActiveId = state.id;
         updateDisplayCard(m);
-      });
-
-      el.addEventListener('mouseleave', function() {
-        if (isMobile()) return;
-        el.classList.remove('is-hovered');
       });
 
       el.addEventListener('click', function(e) {
         e.stopPropagation();
         var isAlreadyActive = el.classList.contains('active');
-        
-        states.forEach(function(s) { 
-          s.el.classList.remove('active', 'is-hovered'); 
-          s.paused = false; 
-        });
-
+        states.forEach(function(s) { s.el.classList.remove('active', 'is-hovered'); s.paused = false; });
         if (!isAlreadyActive) {
-          state.paused = true;
-          el.classList.add('active');
-          currentActiveId = state.id;
-          updateDisplayCard(m);
+          state.paused = true; el.classList.add('active'); updateDisplayCard(m);
         } else {
           updateDisplayCard(null);
         }
@@ -484,58 +435,35 @@ const PAGE = `<!DOCTYPE html>
     });
 
     arena.addEventListener('click', function() {
-      states.forEach(function(s) { 
-        s.el.classList.remove('active', 'is-hovered'); 
-        s.paused = false; 
-      });
+      states.forEach(function(s) { s.el.classList.remove('active', 'is-hovered'); s.paused = false; });
       updateDisplayCard(null);
     });
 
-    /* ── BROWNIAN ANIMATION LOOP ── */
     var lastTime = null;
-
     function tick(ts) {
       if (!lastTime) lastTime = ts;
-      var dt = Math.min((ts - lastTime) / 16.67, 3);
-      lastTime = ts;
-
-      var aW = arena.offsetWidth;
-      var aH = arena.offsetHeight;
-
+      var dt = Math.min((ts - lastTime) / 16.67, 3); lastTime = ts;
+      var aW = arena.offsetWidth, aH = arena.offsetHeight;
       states.forEach(function(s) {
         if (s.paused) return;
-
-        var cw = s.el.offsetWidth  || 140;
-        var ch = s.el.offsetHeight || 44;
-
+        var cw = s.el.offsetWidth || 140, ch = s.el.offsetHeight || 44;
         s.perturbTimer += dt;
         if (s.perturbTimer >= s.perturbInterval) {
-          s.perturbTimer    = 0;
-          s.perturbInterval = 80 + Math.random() * 120;
-          var kick = 0.22;
-          s.vx += (Math.random() - 0.5) * kick;
-          s.vy += (Math.random() - 0.5) * kick;
-          var spd = Math.sqrt(s.vx * s.vx + s.vy * s.vy);
-          var MAX = 1.0, MIN = 0.25;
-          if (spd > MAX && spd > 0)        { s.vx = s.vx / spd * MAX; s.vy = s.vy / spd * MAX; }
-          if (spd < MIN && spd > 0.001)    { s.vx = s.vx / spd * MIN; s.vy = s.vy / spd * MIN; }
+          s.perturbTimer = 0; s.perturbInterval = 80 + Math.random() * 120;
+          var kick = 0.22; s.vx += (Math.random() - 0.5) * kick; s.vy += (Math.random() - 0.5) * kick;
+          var spd = Math.sqrt(s.vx * s.vx + s.vy * s.vy), MAX = 1.0, MIN = 0.25;
+          if (spd > MAX) { s.vx = s.vx / spd * MAX; s.vy = s.vy / spd * MAX; }
+          if (spd < MIN) { s.vx = s.vx / spd * MIN; s.vy = s.vy / spd * MIN; }
         }
-
-        s.x += s.vx * dt;
-        s.y += s.vy * dt;
-
-        if (s.x < 0)       { s.x = 0;       s.vx =  Math.abs(s.vx); }
+        s.x += s.vx * dt; s.y += s.vy * dt;
+        if (s.x < 0) { s.x = 0; s.vx = Math.abs(s.vx); }
         if (s.x + cw > aW) { s.x = aW - cw; s.vx = -Math.abs(s.vx); }
-        if (s.y < 0)       { s.y = 0;       s.vy =  Math.abs(s.vy); }
+        if (s.y < 0) { s.y = 0; s.vy = Math.abs(s.vy); }
         if (s.y + ch > aH) { s.y = aH - ch; s.vy = -Math.abs(s.vy); }
-
-        s.el.style.left = s.x + 'px';
-        s.el.style.top  = s.y + 'px';
+        s.el.style.left = s.x + 'px'; s.el.style.top = s.y + 'px';
       });
-
       requestAnimationFrame(tick);
     }
-
     requestAnimationFrame(tick);
   </script>
 </body>
