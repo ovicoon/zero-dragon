@@ -50,13 +50,13 @@ const PAGE = `<!DOCTYPE html>
     /* HERO */
 
     .hero {
-      min-height: 100vh;
+      min-height: 80vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
-      padding: 80px 24px;
+      padding: 80px 24px 40px 24px;
     }
 
     .logo {
@@ -113,8 +113,6 @@ const PAGE = `<!DOCTYPE html>
 
     /* SECTIONS */
 
-    .section { padding: 120px min(10vw, 120px); }
-
     .section-title {
       font-family: 'Space Mono', monospace;
       font-size: clamp(28px, 5vw, 44px);
@@ -129,47 +127,15 @@ const PAGE = `<!DOCTYPE html>
       font-size: clamp(14px, 2vw, 16px);
     }
 
-    /* CARDS */
-
-    .card-grid {
-      margin-top: 60px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 24px;
-    }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      padding: 32px;
-      transition: transform .25s, border-color .25s;
-    }
-
-    .card:hover {
-      transform: perspective(1000px) rotateX(4deg) rotateY(-4deg) translateY(-6px);
-      border-color: #555;
-    }
-
-    .card-label {
-      color: #777;
-      font-family: 'Space Mono', monospace;
-      font-size: 11px;
-      letter-spacing: .14em;
-      margin-bottom: 14px;
-    }
-
-    .card-title { font-size: 26px; font-weight: 600; margin-bottom: 16px; }
-    .card-text  { color: var(--sub); line-height: 1.7; font-size: 14px; }
-
     /* MEMBERS */
 
-    #members { padding: 120px min(10vw, 120px); }
+    #members { padding: 40px min(10vw, 120px) 120px min(10vw, 120px); }
 
     .members-arena {
-      margin-top: 60px;
+      margin-top: 40px;
       position: relative;
       width: 100%;
-      height: 420px;
+      height: 450px;
       border: 1px solid var(--border);
       overflow: hidden;
       background: #050505;
@@ -205,17 +171,11 @@ const PAGE = `<!DOCTYPE html>
     }
 
     .member-chip.is-hovered .chip-inner,
-    .member-chip.active    .chip-inner {
+    .member-chip.active     .chip-inner {
       border-color: #888;
       background: #111;
     }
 
-    /*
-      Popup wrapper.
-      padding-top/bottom = visual gap AND seamless hover bridge.
-      pointer-events is none until chip is hovered, then auto,
-      so the 220ms leave timer covers the gap while transitioning.
-    */
     .chip-popup {
       position: absolute;
       top: 100%;
@@ -230,7 +190,7 @@ const PAGE = `<!DOCTYPE html>
     }
 
     .member-chip.is-hovered .chip-popup,
-    .member-chip.active    .chip-popup {
+    .member-chip.active     .chip-popup {
       opacity: 1;
       pointer-events: auto;
     }
@@ -269,15 +229,7 @@ const PAGE = `<!DOCTYPE html>
     }
 
     .chip-info-name   { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
-    .chip-info-role   { color: var(--sub); font-size: 13px; line-height: 1.6; margin-bottom: 10px; }
-
-    .chip-info-dept {
-      font-family: 'Space Mono', monospace;
-      font-size: 10px;
-      color: #555;
-      letter-spacing: .1em;
-      margin-bottom: 14px;
-    }
+    .chip-info-role   { color: var(--sub); font-size: 13px; line-height: 1.6; margin-bottom: 14px; }
 
     .chip-info-link {
       display: inline-flex;
@@ -320,15 +272,12 @@ const PAGE = `<!DOCTYPE html>
     /* MOBILE */
 
     @media (max-width: 768px) {
-      .hero    { padding: 60px 20px; }
+      .hero    { padding: 60px 20px 20px 20px; min-height: auto; }
       .logo    { width: 160px; }
       .buttons { width: 100%; flex-direction: column; }
       .btn     { width: 100%; text-align: center; }
-      .section { padding: 80px 20px; }
-      #members { padding: 80px 20px; }
-      .card    { padding: 24px; }
-      .card-title     { font-size: 22px; }
-      .members-arena  { height: 360px; }
+      #members { padding: 60px 20px; }
+      .members-arena  { height: 380px; }
       .chip-popup     { min-width: 180px; }
     }
   </style>
@@ -340,22 +289,8 @@ const PAGE = `<!DOCTYPE html>
     <h1>ZERO DRAGON</h1>
     <p class="subtitle" data-i18n="subtitle"></p>
     <div class="buttons">
-      <a href="#about"    class="btn" data-i18n="btn_about"></a>
-      <a href="#projects" class="btn" data-i18n="btn_projects"></a>
       <a href="#members"  class="btn" data-i18n="btn_members"></a>
     </div>
-  </section>
-
-  <section class="section" id="about">
-    <h2 class="section-title" data-i18n="about_title"></h2>
-    <p  class="section-desc"  data-i18n="about_desc"></p>
-    <div class="card-grid" id="about-cards"></div>
-  </section>
-
-  <section class="section" id="projects">
-    <h2 class="section-title" data-i18n="projects_title"></h2>
-    <p  class="section-desc"  data-i18n="projects_desc"></p>
-    <div class="card-grid" id="project-cards"></div>
   </section>
 
   <section id="members">
@@ -373,22 +308,7 @@ const PAGE = `<!DOCTYPE html>
     var T = {
       ko: {
         subtitle:       'Zero drag to passion.',
-        btn_about:      'ABOUT',
-        btn_projects:   'PROJECTS',
         btn_members:    'MEMBERS',
-        about_title:    'About',
-        about_desc:     'Zero Dragon은 연구, 창의성, 오픈소스 기여, 그리고 의미 있는 디지털 경험에 집중하는 다학제 팀입니다.',
-        dept_label:     '부서',
-        zdr_text:       '학술 및 연구 지향 프로젝트.',
-        zeromind_text:  'AI 연구 및 개발.',
-        projects_title: 'Projects',
-        projects_desc:  '게임 개발부터 AI 실험까지, Zero Dragon은 다양한 아이디어와 기술을 탐구합니다.',
-        active_label:   '진행중',
-        research_label: '연구',
-        oss_label:      '오픈소스',
-        archive_text:   '미션 패치와 프로젝트 역사.',
-        ai_text:        '실험적 AI 및 자동화 프로젝트.',
-        community_text: '오픈 협업을 통한 기여.',
         members_title:  'Members',
         members_desc:   'Zero Dragon을 이끄는 사람들.',
         hint_desktop:   'HOVER TO REVEAL',
@@ -397,22 +317,7 @@ const PAGE = `<!DOCTYPE html>
       },
       en: {
         subtitle:       'Zero drag to passion.',
-        btn_about:      'ABOUT',
-        btn_projects:   'PROJECTS',
         btn_members:    'MEMBERS',
-        about_title:    'About',
-        about_desc:     'Zero Dragon is a multidisciplinary team focused on research, creativity, open-source contribution, and meaningful digital experiences.',
-        dept_label:     'DEPARTMENT',
-        zdr_text:       'Academic and research-oriented projects.',
-        zeromind_text:  'AI research and development.',
-        projects_title: 'Projects',
-        projects_desc:  'From game development to AI experimentation, Zero Dragon explores a wide range of ideas and technologies.',
-        active_label:   'ACTIVE',
-        research_label: 'RESEARCH',
-        oss_label:      'OPEN SOURCE',
-        archive_text:   'Mission patches and project history.',
-        ai_text:        'Experimental AI and automation projects.',
-        community_text: 'Contributing through open collaboration.',
         members_title:  'Members',
         members_desc:   'The people behind Zero Dragon.',
         hint_desktop:   'HOVER TO REVEAL',
@@ -421,12 +326,11 @@ const PAGE = `<!DOCTYPE html>
       }
     };
 
-    /* ── MEMBER DATA ── */
+    /* ── MEMBER DATA (부서 정보 dept 제거) ── */
     var MEMBERS = [
       {
         handle:    'ovicoon',
         role:      { ko: 'Founder · Developer', en: 'Founder · Developer' },
-        dept:      'ZEROMIND · ZDR',
         desc:      { ko: 'Zero Dragon을 처음 세운 사람.', en: 'The one who founded Zero Dragon.' },
         github:    'github.com/ovicoon',
         githubUrl: 'https://github.com/ovicoon'
@@ -434,13 +338,11 @@ const PAGE = `<!DOCTYPE html>
       {
         handle: '___junnn.12',
         role:   { ko: 'Member', en: 'Member' },
-        dept:   'ZDR',
         desc:   null, github: null, githubUrl: null
       },
       {
         handle: 'kkolttugi',
         role:   { ko: 'Member', en: 'Member' },
-        dept:   'ZDR',
         desc:   null, github: null, githubUrl: null
       }
     ];
@@ -454,24 +356,6 @@ const PAGE = `<!DOCTYPE html>
       var v = t[el.dataset.i18n];
       if (v !== undefined) el.textContent = v;
     });
-
-    /* ── GENERATE CARDS ── */
-    function card(label, title, text) {
-      return '<div class="card">'
-        + '<div class="card-label">' + label + '</div>'
-        + '<div class="card-title">' + title + '</div>'
-        + '<div class="card-text">'  + text  + '</div>'
-        + '</div>';
-    }
-
-    document.getElementById('about-cards').innerHTML =
-      card(t.dept_label, 'ZDR',      t.zdr_text) +
-      card(t.dept_label, 'ZeroMind', t.zeromind_text);
-
-    document.getElementById('project-cards').innerHTML =
-      card(t.active_label,   'Mission Archive', t.archive_text) +
-      card(t.research_label, 'AI Systems',      t.ai_text) +
-      card(t.oss_label,      'Community',       t.community_text);
 
     /* ── MEMBERS ARENA ── */
     var GH_ICON = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0">'
@@ -502,7 +386,7 @@ const PAGE = `<!DOCTYPE html>
       var aW    = arena.offsetWidth;
       var cw    = el.offsetWidth  || 140;
       var ch    = el.offsetHeight || 44;
-      var POP_H = 200;
+      var POP_H = 140; /* Reduced because dept info is removed */
       var POP_W = 230;
 
       /* vertical: open above if not enough room below */
@@ -530,7 +414,6 @@ const PAGE = `<!DOCTYPE html>
       var info = '<div class="chip-info-label">' + m.role[lang] + '</div>'
                + '<div class="chip-info-name">'  + m.handle + '</div>';
       if (desc) info += '<div class="chip-info-role">' + desc + '</div>';
-      info += '<div class="chip-info-dept">' + m.dept + '</div>';
       if (m.github) {
         info += '<a class="chip-info-link" href="' + m.githubUrl
               + '" target="_blank" rel="noopener">' + GH_ICON + m.github + '</a>';
@@ -566,12 +449,6 @@ const PAGE = `<!DOCTYPE html>
 
       var popup = el.querySelector('.chip-popup');
 
-      /*
-        Gap fix: mouseleave on the chip fires when mouse moves toward the popup
-        (because the popup is absolutely positioned outside the chip's layout box).
-        A 220ms timer gives the user time to cross the 8px gap before hiding.
-        mouseenter on the popup cancels the timer.
-      */
       function showPopup() {
         clearTimeout(state.leaveTimer);
         state.paused = true;
@@ -630,7 +507,6 @@ const PAGE = `<!DOCTYPE html>
         var cw = s.el.offsetWidth  || 140;
         var ch = s.el.offsetHeight || 44;
 
-        /* random velocity nudge at irregular intervals */
         s.perturbTimer += dt;
         if (s.perturbTimer >= s.perturbInterval) {
           s.perturbTimer    = 0;
@@ -638,7 +514,6 @@ const PAGE = `<!DOCTYPE html>
           var kick = 0.22;
           s.vx += (Math.random() - 0.5) * kick;
           s.vy += (Math.random() - 0.5) * kick;
-          /* clamp speed */
           var spd = Math.sqrt(s.vx * s.vx + s.vy * s.vy);
           var MAX = 1.0, MIN = 0.25;
           if (spd > MAX && spd > 0)        { s.vx = s.vx / spd * MAX; s.vy = s.vy / spd * MAX; }
@@ -648,7 +523,7 @@ const PAGE = `<!DOCTYPE html>
         s.x += s.vx * dt;
         s.y += s.vy * dt;
 
-        /* bounce off walls */
+        /* 실시간 윈도우 반응형 충돌 체크 반영 */
         if (s.x < 0)       { s.x = 0;       s.vx =  Math.abs(s.vx); }
         if (s.x + cw > aW) { s.x = aW - cw; s.vx = -Math.abs(s.vx); }
         if (s.y < 0)       { s.y = 0;       s.vy =  Math.abs(s.vy); }
