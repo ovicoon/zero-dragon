@@ -194,12 +194,11 @@ const PAGE = `<!DOCTYPE html>
     .chip-info-placeholder {
       font-family: 'Space Mono', monospace;
       font-size: 11px;
-      color: #333;
+      color: #777; /* 더 밝게 수정 (#333 -> #777) */
       text-align: center;
       letter-spacing: .15em;
     }
 
-    /* 한국어 모드일 때 플레이스홀더 가독성을 위한 한글 폰트 대응 */
     html[lang="ko"] .chip-info-placeholder {
       font-family: system-ui, sans-serif;
       font-weight: 400;
@@ -253,7 +252,7 @@ const PAGE = `<!DOCTYPE html>
       right: 20px;
       font-family: 'Space Mono', monospace;
       font-size: 10px;
-      color: #2a2a2a;
+      color: #666; /* 더 밝게 수정 (#2a2a2a -> #666) */
       letter-spacing: .1em;
       pointer-events: none;
     }
@@ -269,7 +268,7 @@ const PAGE = `<!DOCTYPE html>
       border-top: 1px solid var(--border);
       padding: 40px 24px;
       text-align: center;
-      color: #444;
+      color: #777; /* 더 밝게 수정 (#444 -> #777) */
       font-family: 'Space Mono', monospace;
       font-size: 12px;
       letter-spacing: .08em;
@@ -315,7 +314,7 @@ const PAGE = `<!DOCTYPE html>
   <footer data-i18n="footer"></footer>
 
   <script>
-    /* ── TRANSLATIONS (한국어 대폭 보강) ── */
+    /* ── TRANSLATIONS (주석 기호 // 제거 및 다국어 팩 수정) ── */
     var T = {
       ko: {
         subtitle:       'Zero drag to passion.',
@@ -324,7 +323,7 @@ const PAGE = `<!DOCTYPE html>
         members_desc:   'ZERO DRAGON을 이끄는 사람들입니다.',
         hint_desktop:   '이름 위에 마우스를 올리면 상세 정보가 표시됩니다',
         hint_mobile:    '이름을 터치하면 상세 정보가 표시됩니다',
-        placeholder:    '// 멤버를 선택하면 이곳에 상세 정보가 나타납니다',
+        placeholder:    '멤버를 선택하면 이곳에 상세 정보가 나타납니다',
         footer:         'ZERO DRAGON — Since 2025'
       },
       en: {
@@ -334,12 +333,12 @@ const PAGE = `<!DOCTYPE html>
         members_desc:   'The people behind Zero Dragon.',
         hint_desktop:   'HOVER CHIP TO SELECT',
         hint_mobile:    'TAP CHIP TO SELECT',
-        placeholder:    '// SELECT A MEMBER TO VIEW DETAILS',
+        placeholder:    'SELECT A MEMBER TO VIEW DETAILS',
         footer:         'ZERO DRAGON — Since 2025'
       }
     };
 
-    /* ── MEMBER DATA (역할명 직관화) ── */
+    /* ── MEMBER DATA ── */
     var MEMBERS = [
       {
         handle:    'ovicoon',
@@ -356,7 +355,7 @@ const PAGE = `<!DOCTYPE html>
       },
       {
         handle: 'kkolttugi',
-        role:   { ko: '크루 멤버', en: 'Crew Member' },
+        role:   { ko: 'Member', en: 'Member' },
         desc:   { ko: 'ZERO DRAGON 크루 멤버.', en: 'Zero Dragon crew member.' },
         github: null, githubUrl: null
       }
