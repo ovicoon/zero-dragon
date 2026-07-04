@@ -384,6 +384,8 @@ const PAGE = `<!DOCTYPE html>
       if (!lastTime) lastTime = ts;
       var dt = Math.min((ts - lastTime) / 16.67, 3); lastTime = ts;
       var aW = arena.offsetWidth, aH = arena.offsetHeight;
+      
+      // First, update positions
       states.forEach(function(s) {
         if (s.paused) return;
         var cw = s.el.offsetWidth || 140, ch = s.el.offsetHeight || 44;
@@ -400,11 +402,75 @@ const PAGE = `<!DOCTYPE html>
         if (s.x + cw > aW) { s.x = aW - cw; s.vx = -Math.abs(s.vx); }
         if (s.y < 0) { s.y = 0; s.vy = Math.abs(s.vy); }
         if (s.y + ch > aH) { s.y = aH - ch; s.vy = -Math.abs(s.vy); }
+      });
+      
+      // Check for collisions between chips
+      for (var i = 0; i < states.length; i++) {
+        var s1 = states[i];
+        if (s1.paused) continue;
+        var cw1 = s1.el.offsetWidth || 140, ch1 = s1.el.offsetHeight || 44;
+        
+        for (var j = i + 1; j < states.length; j++) {
+          var s2 = states[j];
+          if (s2.paused) continue;
+          var cw2 = s2.el.offsetWidth || 140, ch2 = s2.el.offsetHeight || 44;
+          
+          // Check if chips are overlapping
+          var overlapX = Math.min(s1.x + cw1, s2.x + cw2) - Math.max(s1.x, s2.x);
+          var overlapY = Math.min(s1.y + ch1, s2.y + ch2) - Math.max(s1.y, s2.y);
+          
+          if (overlapX > 0 && overlapY > 0) {
+            // Collision detected - push chips apart
+            var centerX1 = s1.x + cw1 / 2;
+            var centerY1 = s1.y + ch1 / 2;
+            var centerX2 = s2.x + cw2 / 2;
+            var centerY2 = s2.y + ch2 / 2;
+            
+            var dx = centerX2 - centerX1;
+            var dy = centerY2 - centerY1;
+            var distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance > 0) {
+              dx = dx / distance;
+              dy = dy / distance;
+              
+              // Calculate minimum separation distance (using average of widths and heights)
+              var minSeparation = (cw1 + cw2) / 2 + (ch1 + ch2) / 2;
+              var overlapDepth = minSeparation - distance;
+              
+              // Push chips apart proportionally
+              var pushFactor = 0.5 * dt;
+              s1.x -= dx * overlapDepth * pushFactor;
+              s1.y -= dy * overlapDepth * pushFactor;
+              s2.x += dx * overlapDepth * pushFactor;
+              s2.y += dy * overlapDepth * pushFactor;
+              
+              // Reverse velocities to bounce off each other with some energy loss
+              var tempVx = s1.vx;
+              var tempVy = s1.vy;
+              s1.vx = s2.vx * 0.8;
+              s1.vy = s2.vy * 0.8;
+              s2.vx = tempVx * 0.8;
+              s2.vy = tempVy * 0.8;
+              
+              // Add small randomness to prevent sticking
+              s1.vx += (Math.random() - 0.5) * 0.1;
+              s1.vy += (Math.random() - 0.5) * 0.1;
+              s2.vx += (Math.random() - 0.5) * 0.1;
+              s2.vy += (Math.random() - 0.5) * 0.1;
+            }
+          }
+        }
+      }
+      
+      // Update DOM positions
+      states.forEach(function(s) {
         s.el.style.left = s.x + 'px'; s.el.style.top = s.y + 'px';
       });
+      
       requestAnimationFrame(tick);
     }
     requestAnimationFrame(tick);
   </script>
 </body>
-</html>`;
+</html>
