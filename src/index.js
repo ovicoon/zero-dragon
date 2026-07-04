@@ -473,4 +473,4 @@ const PAGE = `<!DOCTYPE html>
     requestAnimationFrame(tick);
   </script>
 </body>
-</html>
+</html`;
