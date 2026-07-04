@@ -1,4 +1,4 @@
-Export default {
+export default {
   async fetch(request) {
     return new Response(PAGE, {
       headers: { "content-type": "text/html;charset=UTF-8" }
