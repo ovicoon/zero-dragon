@@ -240,7 +240,7 @@ const PAGE = `<!DOCTYPE html>
 </head>
 <body>
   <section class="hero">
-    <img src="/logo.png" alt="Zero Dragon Logo" class="logo"/>
+    <img src="/logo.svg" alt="Zero Dragon Logo" class="logo"/>
     <h1>ZERO DRAGON</h1>
     <p class="subtitle" data-i18n="subtitle"></p>
     <div class="buttons">
