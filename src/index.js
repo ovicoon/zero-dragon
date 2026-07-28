@@ -42,6 +42,8 @@ const PAGE = `<!DOCTYPE html>
       pointer-events: none;
       z-index: -1;
     }
+
+    /* Hero Section */
     .hero {
       min-height: 100vh;
       display: flex;
@@ -75,6 +77,12 @@ const PAGE = `<!DOCTYPE html>
       margin-bottom: 48px;
       line-height: 1.6;
     }
+    .buttons {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
     .btn {
       border: 1px solid var(--border);
       color: #fff;
@@ -90,8 +98,11 @@ const PAGE = `<!DOCTYPE html>
       border-color: #666;
       background: rgba(255,255,255,.03);
     }
-    #members { 
-      padding: 160px min(10vw, 120px) 160px min(10vw, 120px); 
+
+    /* Section Common */
+    section {
+      padding: 120px min(10vw, 120px);
+      border-top: 1px solid var(--border);
     }
     .section-title {
       font-family: 'Space Mono', monospace;
@@ -104,18 +115,19 @@ const PAGE = `<!DOCTYPE html>
       max-width: 700px;
       line-height: 1.8;
       font-size: clamp(14px, 2vw, 16px);
-      margin-bottom: 60px;
+      margin-bottom: 40px;
     }
-    .members-arena {
+
+    /* Arena Common (Bounce Container) */
+    .arena-container {
       position: relative;
       width: 100%;
-      height: 420px;
+      height: 380px;
       border: 1px solid var(--border);
-      border-bottom: none;
       overflow: hidden;
       background: #050505;
     }
-    .members-arena::before {
+    .arena-container::before {
       content: '';
       position: absolute;
       inset: 0;
@@ -125,9 +137,8 @@ const PAGE = `<!DOCTYPE html>
       background-size: 30px 30px;
       pointer-events: none;
     }
-    .member-chip {
+    .arena-chip {
       position: absolute;
-      cursor: pointer;
       user-select: none;
       z-index: 2;
     }
@@ -141,6 +152,12 @@ const PAGE = `<!DOCTYPE html>
       white-space: nowrap;
       transition: border-color .25s, background .25s;
     }
+
+    /* Members Specific */
+    #members .arena-container {
+      border-bottom: none;
+    }
+    .member-chip { cursor: pointer; }
     .member-chip.is-hovered .chip-inner,
     .member-chip.active .chip-inner {
       border-color: #fff;
@@ -221,6 +238,17 @@ const PAGE = `<!DOCTYPE html>
       font-family: system-ui, sans-serif;
       font-weight: 400;
     }
+
+    /* About Passion Tags Style */
+    .passion-chip .chip-inner {
+      border-color: #222;
+      color: #aaa;
+    }
+    .passion-chip:hover .chip-inner {
+      border-color: #fff;
+      color: #fff;
+    }
+
     footer {
       border-top: 1px solid var(--border);
       padding: 60px 24px;
@@ -232,39 +260,54 @@ const PAGE = `<!DOCTYPE html>
     }
     @media (max-width: 768px) {
       .hero { padding: 60px 20px 80px 20px; min-height: 80vh; }
-      #members { padding: 80px 20px 100px 20px; }
-      .members-arena { height: 340px; }
+      section { padding: 80px 20px; }
+      .arena-container { height: 320px; }
       .members-display { padding: 20px; min-height: 160px; }
     }
   </style>
 </head>
 <body>
-  <section class="hero">
+
+  <section class="hero" style="border-top:none;">
     <img src="/logo.svg" alt="Zero Dragon Logo" class="logo"/>
     <h1>ZERO DRAGON</h1>
     <p class="subtitle" data-i18n="subtitle"></p>
     <div class="buttons">
-      <a href="#members" class="btn" data-i18n="btn_members"></a>
+      <a href="#about" class="btn" data-i18n="btn_about">ABOUT</a>
+      <a href="#members" class="btn" data-i18n="btn_members">MEMBERS</a>
     </div>
   </section>
+
+  <section id="about">
+    <h2 class="section-title" data-i18n="about_title"></h2>
+    <p class="section-desc" data-i18n="about_desc"></p>
+    <div class="arena-container" id="about-arena">
+      </div>
+  </section>
+
   <section id="members">
     <h2 class="section-title" data-i18n="members_title"></h2>
     <p class="section-desc" data-i18n="members_desc"></p>
-    <div class="members-arena" id="arena">
+    <div class="arena-container" id="members-arena">
       <span class="arena-hint" id="arena-hint"></span>
     </div>
     <div class="members-display" id="display-card">
       <div class="chip-info-placeholder" id="placeholder-text"></div>
     </div>
   </section>
+
   <footer data-i18n="footer"></footer>
+
   <script>
     var T = {
-      ko: {
-        subtitle: 'Zero drag to passion.',
+  ko: {
+        subtitle: '열정을 가로막는 것은 없다',
+        btn_about: '소개',
         btn_members: '멤버 소개',
+        about_title: '소개',
+        about_desc: '열정이 필요한 곳이라면 어디든',
         members_title: '멤버',
-        members_desc: 'ZERO DRAGON을 이끄는 사람들입니다.',
+        members_desc: '제로 드래곤에 속해있는 사람들',
         hint_desktop: '이름 위에 마우스를 올리면 상세 정보가 표시됩니다',
         hint_mobile: '이름을 터치하면 상세 정보가 표시됩니다',
         placeholder: '멤버를 선택하면 이곳에 상세 정보가 나타납니다',
@@ -272,8 +315,11 @@ const PAGE = `<!DOCTYPE html>
       },
       en: {
         subtitle: 'Zero drag to passion.',
+        btn_about: 'ABOUT',
         btn_members: 'MEMBERS',
-        members_title: 'Members',
+        about_title: 'ABOUT',
+        about_desc: 'Wherever passion is needed',
+        members_title: 'MEMBERS',
         members_desc: 'The people behind Zero Dragon.',
         hint_desktop: 'HOVER CHIP TO SELECT',
         hint_mobile: 'TAP CHIP TO SELECT',
@@ -281,52 +327,63 @@ const PAGE = `<!DOCTYPE html>
         footer: 'ZERO DRAGON — Since 2025'
       }
     };
+
+    // About Arena Keywords
+    var PASSIONS = [
+      { ko: '공부', en: 'STUDY' },
+      { ko: '코딩', en: 'CODING' },
+    ];
+
+    // Members Data
     var MEMBERS = [
       {
         handle: 'ovicoon',
-        role: { ko: '설립자 · 개발자', en: 'Founder · Developer' },
-        desc: { ko: 'ZERO DRAGON을 처음 세운 사람.', en: 'The one who founded Zero Dragon.' },
+        role: { ko: '설립자 · 팀장 · 운영자 · 개발자 · 스터디그룹 멤버', en: 'Founder · Team Leader · Admin · Developer · Study Group Member' },
+        desc: { ko: '', en: '' },
         github: 'github.com/ovicoon',
         githubUrl: 'https://github.com/ovicoon'
       },
       {
         handle: '___junnn.12',
-        role: { ko: '크루 멤버', en: 'Crew Member' },
-        desc: { ko: 'ZERO DRAGON 크루 멤버.', en: 'Zero Dragon crew member.' },
+        role: { ko: '부운영자 · 스터디그룹 멤버', en: 'Co-Admin · Study Group Member' },
+        desc: { ko: '', en: '' },
         github: null, githubUrl: null
       },
       {
         handle: 'kkolttugi',
-        role: { ko: '크루 멤버', en: 'Crew Member' },
-        desc: { ko: 'ZERO DRAGON 크루 멤버.', en: 'Zero Dragon crew member.' },
+        role: { ko: '부운영자 · 스터디그룹 멤버', en: 'Co-Admin · Study Group Member' },
+        desc: { ko: '', en: '' },
         github: null, githubUrl: null
       },
       {
         handle: 'heo_won12',
-        role: { ko: '크루 멤버', en: 'Crew Member' },
-        desc: { ko: 'ZERO DRAGON 크루 멤버.', en: 'Zero Dragon crew member.' },
+        role: { ko: '부운영자 · 스터디그룹 멤버', en: 'Co-Admin · Study Group Member' },
+        desc: { ko: '', en: '' },
         github: null, githubUrl: null
       }
     ];
+
     var lang = navigator.language.startsWith('ko') ? 'ko' : 'en';
     var t = T[lang];
     document.documentElement.lang = lang;
+
+    // Apply i18n
     document.querySelectorAll('[data-i18n]').forEach(function(el) {
       var v = t[el.dataset.i18n];
       if (v !== undefined) el.textContent = v;
     });
-    var arena = document.getElementById('arena');
+
+    var isMobile = function() { return window.matchMedia('(hover: none)').matches; };
+    
+    // Members Display Setup
     var displayCard = document.getElementById('display-card');
     var placeholder = document.getElementById('placeholder-text');
-    var isMobile = function() { return window.matchMedia('(hover: none)').matches; };
     placeholder.textContent = t.placeholder;
     document.getElementById('arena-hint').textContent = isMobile() ? t.hint_mobile : t.hint_desktop;
-    var states = [];
-    var currentActiveId = null;
+
     function updateDisplayCard(memberData) {
       if (!memberData) {
         displayCard.innerHTML = '<div class="chip-info-placeholder">' + t.placeholder + '</div>';
-        currentActiveId = null;
         return;
       }
       var desc = memberData.desc ? memberData.desc[lang] : '';
@@ -341,76 +398,126 @@ const PAGE = `<!DOCTYPE html>
           githubLink +
         '</div>';
     }
-    MEMBERS.forEach(function(m, idx) {
-      var el = document.createElement('div');
-      el.className = 'member-chip';
-      el.innerHTML = '<div class="chip-inner">' + m.handle + '</div>';
-      arena.appendChild(el);
-      var aW = arena.offsetWidth, aH = arena.offsetHeight;
-      var mg = 20, angle = Math.random() * Math.PI * 2, spd = 0.45 + Math.random() * 0.4;
-      var state = {
-        id: idx, data: m, el: el,
-        x: mg + Math.random() * (aW - 160 - mg * 2),
-        y: mg + Math.random() * (aH - 44 - mg * 2),
-        vx: Math.cos(angle) * spd, vy: Math.sin(angle) * spd,
-        paused: false, perturbTimer: 0, perturbInterval: 80 + Math.random() * 120
-      };
-      states.push(state);
-      el.style.left = state.x + 'px'; el.style.top = state.y + 'px';
-      el.addEventListener('mouseenter', function() {
-        if (isMobile()) return;
-        states.forEach(function(s) { s.el.classList.remove('is-hovered'); s.paused = false; });
-        state.paused = true;
-        el.classList.add('is-hovered');
-        updateDisplayCard(m);
-      });
-      el.addEventListener('click', function(e) {
-        e.stopPropagation();
-        var isAlreadyActive = el.classList.contains('active');
-        states.forEach(function(s) { s.el.classList.remove('active', 'is-hovered'); s.paused = false; });
-        if (!isAlreadyActive) {
-          state.paused = true; el.classList.add('active'); updateDisplayCard(m);
-        } else {
-          updateDisplayCard(null);
+
+    // Generic Physics Engine for Arenas
+    var allArenas = [];
+
+    function setupArena(arenaEl, items, isInteractive) {
+      var states = [];
+      var containerW = arenaEl.offsetWidth;
+      var containerH = arenaEl.offsetHeight;
+
+      items.forEach(function(item, idx) {
+        var el = document.createElement('div');
+        var labelText = typeof item === 'string' ? item : (item[lang] || item.handle);
+        
+        el.className = 'arena-chip ' + (isInteractive ? 'member-chip' : 'passion-chip');
+        el.innerHTML = '<div class="chip-inner">' + labelText + '</div>';
+        arenaEl.appendChild(el);
+
+        var mg = 20;
+        var angle = Math.random() * Math.PI * 2;
+        var spd = 0.4 + Math.random() * 0.45;
+
+        var state = {
+          el: el,
+          data: item,
+          x: mg + Math.random() * Math.max(10, containerW - 140 - mg * 2),
+          y: mg + Math.random() * Math.max(10, containerH - 44 - mg * 2),
+          vx: Math.cos(angle) * spd,
+          vy: Math.sin(angle) * spd,
+          paused: false,
+          perturbTimer: 0,
+          perturbInterval: 80 + Math.random() * 120
+        };
+
+        states.push(state);
+        el.style.left = state.x + 'px';
+        el.style.top = state.y + 'px';
+
+        if (isInteractive) {
+          el.addEventListener('mouseenter', function() {
+            if (isMobile()) return;
+            states.forEach(function(s) { s.el.classList.remove('is-hovered'); s.paused = false; });
+            state.paused = true;
+            el.classList.add('is-hovered');
+            updateDisplayCard(item);
+          });
+
+          el.addEventListener('click', function(e) {
+            e.stopPropagation();
+            var isAlreadyActive = el.classList.contains('active');
+            states.forEach(function(s) { s.el.classList.remove('active', 'is-hovered'); s.paused = false; });
+            if (!isAlreadyActive) {
+              state.paused = true;
+              el.classList.add('active');
+              updateDisplayCard(item);
+            } else {
+              updateDisplayCard(null);
+            }
+          });
         }
       });
-    });
-    arena.addEventListener('click', function() {
-      states.forEach(function(s) { s.el.classList.remove('active', 'is-hovered'); s.paused = false; });
-      updateDisplayCard(null);
-    });
+
+      if (isInteractive) {
+        arenaEl.addEventListener('click', function() {
+          states.forEach(function(s) { s.el.classList.remove('active', 'is-hovered'); s.paused = false; });
+          updateDisplayCard(null);
+        });
+      }
+
+      allArenas.push({ arenaEl: arenaEl, states: states });
+    }
+
+    // Initialize Arenas
+    setupArena(document.getElementById('about-arena'), PASSIONS, false);
+    setupArena(document.getElementById('members-arena'), MEMBERS, true);
+
+    // Global Animation Loop
     var lastTime = null;
     function tick(ts) {
       if (!lastTime) lastTime = ts;
-      var dt = Math.min((ts - lastTime) / 16.67, 3); lastTime = ts;
-      var aW = arena.offsetWidth, aH = arena.offsetHeight;
-      
-      // First, update positions
-      states.forEach(function(s) {
-        if (s.paused) return;
-        var cw = s.el.offsetWidth || 140, ch = s.el.offsetHeight || 44;
-        s.perturbTimer += dt;
-        if (s.perturbTimer >= s.perturbInterval) {
-          s.perturbTimer = 0; s.perturbInterval = 80 + Math.random() * 120;
-          var kick = 0.22; s.vx += (Math.random() - 0.5) * kick; s.vy += (Math.random() - 0.5) * kick;
-          var spd = Math.sqrt(s.vx * s.vx + s.vy * s.vy), MAX = 1.0, MIN = 0.25;
-          if (spd > MAX) { s.vx = s.vx / spd * MAX; s.vy = s.vy / spd * MAX; }
-          if (spd < MIN) { s.vx = s.vx / spd * MIN; s.vy = s.vy / spd * MIN; }
-        }
-        s.x += s.vx * dt; s.y += s.vy * dt;
-        if (s.x < 0) { s.x = 0; s.vx = Math.abs(s.vx); }
-        if (s.x + cw > aW) { s.x = aW - cw; s.vx = -Math.abs(s.vx); }
-        if (s.y < 0) { s.y = 0; s.vy = Math.abs(s.vy); }
-        if (s.y + ch > aH) { s.y = aH - ch; s.vy = -Math.abs(s.vy); }
+      var dt = Math.min((ts - lastTime) / 16.67, 3); 
+      lastTime = ts;
+
+      allArenas.forEach(function(arenaObj) {
+        var aW = arenaObj.arenaEl.offsetWidth;
+        var aH = arenaObj.arenaEl.offsetHeight;
+
+        arenaObj.states.forEach(function(s) {
+          if (s.paused) return;
+
+          var cw = s.el.offsetWidth || 120;
+          var ch = s.el.offsetHeight || 40;
+
+          s.perturbTimer += dt;
+          if (s.perturbTimer >= s.perturbInterval) {
+            s.perturbTimer = 0;
+            s.perturbInterval = 80 + Math.random() * 120;
+            var kick = 0.22;
+            s.vx += (Math.random() - 0.5) * kick;
+            s.vy += (Math.random() - 0.5) * kick;
+            var spd = Math.sqrt(s.vx * s.vx + s.vy * s.vy), MAX = 1.0, MIN = 0.25;
+            if (spd > MAX) { s.vx = s.vx / spd * MAX; s.vy = s.vy / spd * MAX; }
+            if (spd < MIN) { s.vx = s.vx / spd * MIN; s.vy = s.vy / spd * MIN; }
+          }
+
+          s.x += s.vx * dt;
+          s.y += s.vy * dt;
+
+          if (s.x < 0) { s.x = 0; s.vx = Math.abs(s.vx); }
+          if (s.x + cw > aW) { s.x = aW - cw; s.vx = -Math.abs(s.vx); }
+          if (s.y < 0) { s.y = 0; s.vy = Math.abs(s.vy); }
+          if (s.y + ch > aH) { s.y = aH - ch; s.vy = -Math.abs(s.vy); }
+
+          s.el.style.left = s.x + 'px';
+          s.el.style.top = s.y + 'px';
+        });
       });
-      
-      // Update DOM positions
-      states.forEach(function(s) {
-        s.el.style.left = s.x + 'px'; s.el.style.top = s.y + 'px';
-      });
-      
+
       requestAnimationFrame(tick);
     }
+
     requestAnimationFrame(tick);
   </script>
 </body>
