@@ -331,7 +331,7 @@ const PAGE = `<!DOCTYPE html>
     // About Arena Keywords
     var PASSIONS = [
       { ko: '공부', en: 'STUDY' },
-      { ko: '코딩', en: 'CODING' },
+      { ko: '개발', en: 'DEVELOP' },
     ];
 
     // Members Data
